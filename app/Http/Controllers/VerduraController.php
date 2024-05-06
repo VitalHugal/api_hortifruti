@@ -10,9 +10,18 @@ class VerduraController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    protected $verdura;
+
+    public function __construct(Verdura $verdura)
+    {
+        $this->verdura = $verdura;
+    }
     public function index()
     {
-        //
+        //$verdura = Verdura::all();
+        $verdura = $this->verdura->all();
+        return $verdura;
     }
 
     /**
@@ -28,15 +37,18 @@ class VerduraController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //$fruta = Fruta::create($request->all());
+        $verdura = $this->verdura->create($request->all());
+        return $verdura;
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Verdura $verdura)
+    public function show($id)
     {
-        //
+        $verdura = $this->verdura->find($id);
+        return $verdura;
     }
 
     /**
@@ -50,16 +62,27 @@ class VerduraController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Verdura $verdura)
+    public function update(Request $request, $id)
     {
-        //
+       // print_r($request->all());//os dados atualizados
+        // echo '<hr>';
+        // print_r($fruta->getAttributes());//os dados antigos
+
+        $verdura = $this->verdura->find($id);
+        $verdura->update($request->all());
+        return $verdura;
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Verdura $verdura)
+    public function destroy( $id)
     {
-        //
+        $verdura = $this->verdura->find($id);
+       if ($verdura === null) {
+        return ['erro'=>'Recurso indisponivel - (Exclusão)'];
+    }
+       $verdura->delete();
+       return ['msg'=>'A verdura foi removida'];
     }
 }

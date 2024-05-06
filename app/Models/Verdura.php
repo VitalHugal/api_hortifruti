@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Verdura extends Model
 {
+    use HasFactory;
+    
     protected $fillable = ['nome', 'descrição', 'imagem', 'preço', 'estoque'];
 
     public function rules()

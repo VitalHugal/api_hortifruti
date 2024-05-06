@@ -10,9 +10,18 @@ class LegumeController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    protected $legume;
+
+    public function __construct(Legume $legume)
+    {
+        $this->legume = $legume;
+    }
     public function index()
     {
-        //
+        //$legume = Legume::all();
+        $legume = $this->legume->all();
+        return $legume;
     }
 
     /**
@@ -28,15 +37,18 @@ class LegumeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+         //$fruta = Fruta::create($request->all());
+         $legume = $this->legume->create($request->all());
+         return $legume;
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Legume $legume)
+    public function show( $id)
     {
-        //
+        $legume = $this->legume->find($id);
+        return $legume;
     }
 
     /**
@@ -50,16 +62,27 @@ class LegumeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Legume $legume)
+    public function update(Request $request,  $id)
     {
-        //
+        // print_r($request->all());//os dados atualizados
+        // echo '<hr>';
+        // print_r($fruta->getAttributes());//os dados antigos
+
+        $legume = $this->legume->find($id);
+        $legume->update($request->all());
+        return $legume;
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Legume $legume)
+    public function destroy( $id)
     {
-        //
+        $legume = $this->legume->find($id);
+       if ($legume === null) {
+        return ['erro'=>'Recurso indisponivel - (Exclusão)'];
+    }
+       $legume->delete();
+       return ['msg'=>'O legume foi removido'];
     }
 }
