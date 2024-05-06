@@ -10,9 +10,18 @@ class FrutaController extends Controller
     /**
      * Display a listing of the resource.
      */
+    protected $fruta;
+
+    public function __construct(Fruta $fruta)
+    {
+        $this->fruta = $fruta;
+    }
+
     public function index()
     {
-        //
+        //$fruta = Fruta::all();
+        $fruta = $this->fruta->all();
+        return $fruta;
     }
 
     /**
@@ -28,15 +37,18 @@ class FrutaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //$fruta = Fruta::create($request->all());
+        $fruta = $this->fruta->create($request->all());
+        return $fruta;
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Fruta $fruta)
+    public function show($id)
     {
-        //
+        $fruta = $this->fruta->find($id);
+        return $fruta;
     }
 
     /**
@@ -50,16 +62,27 @@ class FrutaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Fruta $fruta)
+    public function update(Request $request, $id)
     {
-        //
+        // print_r($request->all());//os dados atualizados
+        // echo '<hr>';
+        // print_r($fruta->getAttributes());//os dados antigos
+
+        $fruta = $this->fruta->find($id);
+        $fruta->update($request->all());
+        return $fruta;
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Fruta $fruta)
+    public function destroy($id)
     {
-        //
+        $fruta = $this->fruta->find($id);
+       if ($fruta === null) {
+        return ['erro'=>'Recurso indisponivel - (Exclusão)'];
+    }
+       $fruta->delete();
+       return ['msg'=>'A marca foi removida'];
     }
 }

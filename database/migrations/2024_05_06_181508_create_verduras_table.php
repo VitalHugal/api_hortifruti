@@ -17,7 +17,7 @@ return new class extends Migration
             $table->longText('descrição', 150);
             $table->string('imagem', 100)->comment('Imagem da verdura');
             $table->float('preço', 10,2);
-            $table->integer('Estoque');
+            $table->integer('estoque');
             $table->timestamps();
         });
     }
