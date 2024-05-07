@@ -100,16 +100,14 @@ class LegumeController extends Controller
         }
         //Se for recuperado arquivo de imagem pela rquisição - excluir imagem existente para add nova 
         if ($request->file('imagem')) {
-            Storage::disk('public/imagens/legumes')->delete($legume->imagem);
+            Storage::disk('public')->delete($legume->imagem);
         }
-
-        //
         $imagem = $request->file('imagem');
         $imagem_urn = $imagem->store('imagens/legumes', 'public');
         $legume->fill($request->all());
         $legume->imagem = $imagem_urn;
         // Atualiza os dados do legume - retorna
-        $legume->update($request->all());
+        $legume->save();
         return response()->json($legume, 200);
     }
 
@@ -125,7 +123,7 @@ class LegumeController extends Controller
             return response()->json(['erro' => 'Recurso indisponivel - (Método destroy)'], 404);
         }
         //exclusão da imagem dentro da pasta legumes 
-        Storage::disk('public/imagens/legumes')->delete($legume->imagem);
+        Storage::disk('public')->delete($legume->imagem);
         //econtrou o item - exclui - retorna sucesso
         $legume->delete();
         return response()->json(['msg' => 'O Legume foi removida com sucesso!'], 200);
