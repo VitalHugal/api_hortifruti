@@ -80,7 +80,7 @@ class FrutaController extends Controller
     {
         $fruta = $this->fruta->find($id);
        if ($fruta === null) {
-        return ['erro'=>'Recurso indisponivel - (Exclusão)'];
+        return ['erro'=>'Recurso indisponivel - (destroy)'];
     }
        $fruta->delete();
        return ['msg'=>'A fruta foi removida'];

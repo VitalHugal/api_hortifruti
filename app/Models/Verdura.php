@@ -8,18 +8,24 @@ use Illuminate\Database\Eloquent\Model;
 class Verdura extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = ['nome', 'descrição', 'imagem', 'preço', 'estoque'];
 
     public function rules()
     {
         return [
-            'nome' => 'required',
+            'nome' => 'required|unique:verduras',
             'descrição' => 'required',
             'imagem' => 'required',
             'preço' => 'required',
             'estoque' => 'required',
             
+        ];
+    }
+    public function feedback(){
+        return [
+        'required'=> 'O campo :attribute é obrigatório.',
+        'nome.unique' => 'O nome da verdura já existe.'
         ];
     }
 }
