@@ -83,6 +83,6 @@ class FrutaController extends Controller
         return ['erro'=>'Recurso indisponivel - (Exclusão)'];
     }
        $fruta->delete();
-       return ['msg'=>'A Fruta foi removida'];
+       return ['msg'=>'A fruta foi removida'];
     }
 }
