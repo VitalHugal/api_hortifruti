@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Legume;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class LegumeController extends Controller
 {
@@ -38,10 +39,20 @@ class LegumeController extends Controller
     public function store(Request $request)
     {
         $request->validate($this->legume->rules());
+        //recuperando o arquivo de imagem da requisição
+        $imagem = $request->file('imagem');
+        //usando metodo store para guardar a imagem/modelos do diretorio publico 
+        $imagem_urn = $imagem->store('imagens/legumes', 'public');
+        //criando uma novo registro no banco de dados
+        $legume = $this->legume->create([
+            'nome' => $request->nome,
+            'descrição' => $request->descrição,
+            'imagem' => $imagem_urn,
+            'preço' => $request->preço,
+            'estoque' => $request->estoque,
+        ]);
 
-        //$fruta = Fruta::create($request->all());
-        $legume = $this->legume->create($request->all());
-        return $legume;
+        return response()->json($legume, 201);
     }
 
     /**
@@ -49,12 +60,13 @@ class LegumeController extends Controller
      */
     public function show($id)
     {
+        //Se item não encontrado através do seu id - erro
         $legume = $this->legume->find($id);
         if ($legume === null) {
-            return ['erro' => 'Recurso indisponivel - (Método show)', 404];
+            return response()->json(['erro' => 'Recurso indisponivel - (Método show)'], 404);
         }
-        $legume = $this->legume->find($id);
-        return $legume;
+        //Encontrou item retorna 
+        return response()->json($legume, 200);
     }
 
     /**
@@ -68,30 +80,54 @@ class LegumeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,  $id)
+    public function update(Request $request, $id)
     {
-        // print_r($request->all());//os dados atualizados
-        // echo '<hr>';
-        // print_r($fruta->getAttributes());//os dados antigos
+        // Verifica se o item existe através do ID
         $legume = $this->legume->find($id);
-        if ($legume === null) {
-            return ['erro' => 'Recurso indisponivel - (Método update)', 404];
+        // Se o método for PATCH
+        if ($request->method() === 'PATCH') {
+            // Armazena dinamicamente as regras de validação aplicáveis aos campos sendo atualizados
+            $regrasDinamicas = [];
+            foreach ($legume->rules() as $input => $regra) {
+                if (array_key_exists($input, $request->all())) {
+                    $regrasDinamicas[$input] = $regra;
+                }
+            }
+            // Aplica as regras dinâmicas de validação
+            $request->validate($regrasDinamicas);
+        } else {
+            $request->validate($legume->rules());
         }
-        $legume = $this->legume->find($id);
+        //Se for recuperado arquivo de imagem pela rquisição - excluir imagem existente para add nova 
+        if ($request->file('imagem')) {
+            Storage::disk('public/imagens/legumes')->delete($legume->imagem);
+        }
+
+        //
+        $imagem = $request->file('imagem');
+        $imagem_urn = $imagem->store('imagens/legumes', 'public');
+        $legume->fill($request->all());
+        $legume->imagem = $imagem_urn;
+        // Atualiza os dados do legume - retorna
         $legume->update($request->all());
-        return $legume;
+        return response()->json($legume, 200);
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
     {
+        //Se item não encontrado através do seu id - erro
         $legume = $this->legume->find($id);
         if ($legume === null) {
-            return ['erro' => 'Recurso indisponivel - (Método destroy)', 404];
+            return response()->json(['erro' => 'Recurso indisponivel - (Método destroy)'], 404);
         }
+        //exclusão da imagem dentro da pasta legumes 
+        Storage::disk('public/imagens/legumes')->delete($legume->imagem);
+        //econtrou o item - exclui - retorna sucesso
         $legume->delete();
-        return ['msg' => 'O legume foi removido'];
+        return response()->json(['msg' => 'O Legume foi removida com sucesso!'], 200);
     }
 }
