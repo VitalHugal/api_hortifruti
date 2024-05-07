@@ -15,6 +15,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request){
 });
 
 
-Route::apiResource('Fruta', FrutaController::class);   
-Route::apiResource('Legume', LegumeController::class);
-Route::apiResource('Verdura', VerduraController::class);
+Route::apiResource('/fruta', FrutaController::class);   
+Route::apiResource('/legume', LegumeController::class);
+Route::apiResource('/verdura', VerduraController::class);
