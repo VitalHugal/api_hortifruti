@@ -16,10 +16,9 @@ class Legume extends Model
         return [
             'nome' => 'required|unique:legumes',
             'descrição' => 'required',
-            'imagem' => 'required|file|mimes:png, jpg,jpeg',
+            'imagem' => 'required|file|mimes:png,jpg,jpeg',
             'preço' => 'required',
-            'estoque' => 'required',
-            
+            'estoque' => 'required',  
         ];
     }
     public function feedback(){

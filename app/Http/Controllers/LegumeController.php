@@ -102,6 +102,7 @@ class LegumeController extends Controller
         if ($request->file('imagem')) {
             Storage::disk('public')->delete($legume->imagem);
         }
+
         $imagem = $request->file('imagem');
         $imagem_urn = $imagem->store('imagens/legumes', 'public');
         $legume->fill($request->all());
