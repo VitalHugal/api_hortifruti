@@ -39,10 +39,13 @@ class LegumeController extends Controller
     public function store(Request $request)
     {
         $request->validate($this->legume->rules());
+
         //recuperando o arquivo de imagem da requisição
         $imagem = $request->file('imagem');
+
         //usando metodo store para guardar a imagem/modelos do diretorio publico 
         $imagem_urn = $imagem->store('imagens/legumes', 'public');
+        
         //criando uma novo registro no banco de dados
         $legume = $this->legume->create([
             'nome' => $request->nome,
